@@ -1,0 +1,220 @@
+// ===================================================================
+// Land Acquisition Monitoring System: Prisma Schema
+// SIH26016 - Ministry of Rural Development
+// ===================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================================================================
+// ENUMS (fixed sets of choices, prevents invalid/free-text data)
+// ===================================================================
+
+enum Role {
+  ADMIN // verifies signups and approves role assignments - seeded directly, no self-signup
+  CENTRAL
+  STATE
+  DISTRICT
+  AGENCY
+  CITIZEN // no password account - verified via lookup, see access notes below
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Stage {
+  PROPOSAL_SUBMITTED
+  UNDER_SCRUTINY
+  NOTIFICATION_ISSUED
+  AWARD_DECLARED
+  COMPENSATION_DISBURSED
+  POSSESSION_TAKEN
+  RR_COMPLETED
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RRStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum CompensationStatus {
+  PENDING
+  PARTIAL
+  PAID
+}
+
+// ===================================================================
+// CORE ENTITIES
+// ===================================================================
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  state     String? // null for CENTRAL role users
+  district  String? // null unless role = DISTRICT; scopes DISTRICT users to ground-level data
+  createdAt DateTime @default(now())
+
+  // Signup verification - user requests a role at signup, an ADMIN approves/rejects it.
+  // ADMIN accounts are seeded directly and skip this flow (default APPROVED).
+  verificationStatus VerificationStatus @default(PENDING)
+  verificationDocUrl String? // uploaded proof of identity/authority (govt ID, appointment letter, etc.)
+  verifiedBy         User?    @relation("Verifications", fields: [verifiedById], references: [id])
+  verifiedById       String?
+  verifiedAt         DateTime?
+  rejectionReason    String?
+
+  // Reverse relation: signups this user (as an ADMIN) has reviewed
+  verifications User[] @relation("Verifications")
+
+  // Relations: things this user did (for audit trail)
+  documentsUploaded DocumentRecord[]
+  statusChanges     StatusHistory[]
+
+  @@index([verificationStatus])
+}
+
+model Project {
+  id               String    @id @default(cuid())
+  name             String
+  ministry         String // owning ministry, e.g. "MoRD"
+  implementingAgency String // e.g. "NHAI", "Indian Railways", state irrigation dept - used to scope AGENCY role visibility
+  state            String
+  sector           String // Highway, Railway, Irrigation, Urban Development, etc.
+  createdAt        DateTime  @default(now())
+  targetCompletion DateTime?
+
+  parcels LandParcel[]
+
+  @@index([state])
+  @@index([sector])
+  @@index([implementingAgency])
+}
+
+model LandParcel {
+  id           String @id @default(cuid())
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId    String
+
+  district     String? // ground-level scoping field for DISTRICT role access
+  surveyNumber String
+  latitude     Float
+  longitude    Float
+  areaHectares Float
+
+  status       Stage  @default(PROPOSAL_SUBMITTED)
+  enteredStageAt DateTime @default(now())
+
+  awardDate    DateTime?
+  // ^ date the Award (compensation amount) was legally declared.
+  //   Used to check the Section 24(2) payment-deadline risk - if
+  //   compensation isn't paid within the legally expected window
+  //   after this date, the acquisition faces lapse risk. See risk
+  //   model notes below.
+  // ^ when the parcel entered its CURRENT stage - needed to calculate
+  //   "days_in_current_stage" for the ML risk model
+
+  compensationAmount     Float?
+  compensationPaid       Float?
+  compensationStatus     CompensationStatus @default(PENDING)
+
+  hasDispute   Boolean @default(false)
+  disputeNotes String?
+
+  // Citizen lookup fields - landowner verifies with survey number + phone,
+  // no password account needed. Keep minimal: just enough to verify identity.
+  ownerName  String?
+  ownerPhone String?
+  // ^ added after the ML feature walkthrough - a hard-rule risk override
+
+  // ML risk model output, cached here so we don't recompute on every page load
+  riskLevel    RiskLevel?
+  riskReason   String?
+  riskUpdatedAt DateTime?
+
+  documents      DocumentRecord[]
+  families       AffectedFamily[]
+  statusHistory  StatusHistory[]
+
+  @@index([status])
+  @@index([projectId])
+  @@index([district])
+  @@unique([projectId, surveyNumber])
+  @@index([surveyNumber, ownerPhone]) // fast citizen lookup by survey number + phone
+}
+
+model DocumentRecord {
+  id         String   @id @default(cuid())
+  parcel     LandParcel @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  parcelId   String
+
+  docType    String // e.g. "Ownership Proof", "Survey Settlement", "Notification Copy"
+  fileUrl    String
+  version    Int      @default(1)
+
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  uploadedById String
+  uploadedAt   DateTime @default(now())
+
+  @@index([parcelId])
+}
+
+model AffectedFamily {
+  id                 String   @id @default(cuid())
+  parcel             LandParcel @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  parcelId           String
+
+  name               String
+  rrStatus           RRStatus           @default(PENDING)
+  compensationStatus CompensationStatus @default(PENDING)
+
+  @@index([parcelId])
+}
+
+model StatusHistory {
+  id         String   @id @default(cuid())
+  parcel     LandParcel @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  parcelId   String
+
+  fromStage  Stage?
+  toStage    Stage
+  changedBy  User     @relation(fields: [changedById], references: [id])
+  changedById String
+  changedAt  DateTime @default(now())
+  notes      String?
+
+  @@index([parcelId])
+  @@index([toStage])
+}
+
+// ===================================================================
+// REFERENCE TABLE (required documents per workflow stage)
+// Discovered during the ML feature walkthrough: we need this to
+// calculate "missing_document_count" instead of hardcoding it in code
+// ===================================================================
+
+model RequiredDocument {
+  id       String @id @default(cuid())
+  stage    Stage
+  docType  String // must match DocumentRecord.docType exactly
+
+  @@unique([stage, docType])
+}
