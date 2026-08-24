@@ -218,3 +218,13 @@ model RequiredDocument {
 
   @@unique([stage, docType])
 }
+
+model OtpVerification {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
