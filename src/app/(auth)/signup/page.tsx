@@ -25,6 +25,7 @@ export default function SignupPage() {
     role: '',
     state: '',
     district: '',
+    agencyName: '',
     verificationDocUrl: '',
   })
   const [otp, setOtp] = useState('')
@@ -259,6 +260,13 @@ export default function SignupPage() {
               placeholder="District"
               value={form.district}
               onChange={(e) => update('district', e.target.value)}
+            />
+          )}
+          {form.role === 'AGENCY' && (
+            <Input
+              placeholder="Agency Name (e.g. NHAI)"
+              value={form.agencyName}
+              onChange={(e) => update('agencyName', e.target.value)}
             />
           )}
           <Input

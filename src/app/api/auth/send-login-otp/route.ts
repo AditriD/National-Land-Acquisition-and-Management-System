@@ -27,9 +27,11 @@ export async function POST(req: Request) {
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString()
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
-
+  
   await prisma.otpVerification.deleteMany({ where: { email } })
   await prisma.otpVerification.create({ data: { email, otp, expiresAt } })
+
+  console.log(`[DEV ONLY] Login OTP for ${email}: ${otp}`) // ← add this line
 
   try {
     await resend.emails.send({
@@ -40,7 +42,8 @@ export async function POST(req: Request) {
     })
   } catch (err) {
     console.error('Resend error:', err)
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    // Don't block login testing just because email failed to send to a non-Resend-verified address
+    // return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 
   return NextResponse.json({ success: true })

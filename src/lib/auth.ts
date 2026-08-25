@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
                 if (credentials.adminKey !== process.env.ADMIN_ACCESS_KEY) {
                     throw new Error('Invalid admin key')
                 }
-                return { id: user.id, name: user.name, email: user.email, role: user.role, state: user.state, district: user.district }
+                return { id: user.id, name: user.name, email: user.email, role: user.role, state: user.state, district: user.district, agencyName: user.agencyName, }
             }
             
             // --- Normal OTP login path ---
@@ -65,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as any).role
         token.state = (user as any).state
         token.district = (user as any).district
+        token.agencyName = (user as any).agencyName
       }
       return token
     },
@@ -74,6 +75,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
         session.user.state = token.state as string | null
         session.user.district = token.district as string | null
+        session.user.agencyName = token.agencyName as string | null
       }
       return session
     },

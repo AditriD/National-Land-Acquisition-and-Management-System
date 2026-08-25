@@ -15,6 +15,7 @@ declare module 'next-auth' {
       role: string
       state?: string | null
       district?: string | null
+      agencyName?: string | null
     }
   }
 }
@@ -24,5 +25,6 @@ declare module 'next-auth/jwt' {
     role?: string
     state?: string | null
     district?: string | null
+    agencyName?: string | null
   }
 }

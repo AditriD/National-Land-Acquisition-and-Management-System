@@ -82,6 +82,7 @@ async function main() {
         email: `agency.${agency.toLowerCase().replace(/\s+/g, '')}@landacq.gov.in`,
         password: hashedPassword,
         role: Role.AGENCY,
+        agencyName: agency,
         verificationStatus: VerificationStatus.APPROVED,
       },
     })
