@@ -13,6 +13,10 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import { ParcelMap } from '@/components/parcel-map-client'
+import { getScopedParcels } from '@/lib/get-scoped-parcels'
+import { ViewStatsButton } from '@/components/dashboard/view-stats-button'
+
 
 const RISK_STYLES: Record<string, string> = {
   LOW: 'bg-green-100 text-green-700 hover:bg-green-100',
@@ -25,6 +29,8 @@ export default async function CentralDashboard() {
     include: { parcels: true },
     orderBy: { createdAt: 'desc' },
   })
+
+  const parcels = await getScopedParcels()
 
   const totalProjects = projects.length
   const totalParcels = projects.reduce((sum, p) => sum + p.parcels.length, 0)
@@ -45,6 +51,12 @@ export default async function CentralDashboard() {
 
   return (
     <DashboardLayout title="Central Dashboard — National View" role="CENTRAL">
+      
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold">National Overview</h1>
+        <ViewStatsButton />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="p-6">
           <p className="text-sm text-slate-500">Total Projects</p>
@@ -74,6 +86,11 @@ export default async function CentralDashboard() {
           ))}
         </div>
       </Card>
+
+      <div className="bg-white rounded-xl border p-6">
+        <h2 className="font-semibold mb-4">Parcel Map</h2>
+        <ParcelMap parcels={parcels} />
+      </div>
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">All Projects</h2>
