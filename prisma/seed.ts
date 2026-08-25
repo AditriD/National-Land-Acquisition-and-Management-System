@@ -1,9 +1,19 @@
 import { PrismaClient, Role, VerificationStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { seedProjectsAndLandParcels } from './seed-data/projects-and-parcels'
+import { seedRequiredDocuments } from './seed-data/required-documents'
+import { seedStatusHistory } from './seed-data/status-history'
+import { seedPlaceholderRisk } from './seed-data/risk-placeholder'
+import { seedDocumentsAndFamilies } from './seed-data/documents-and-families'
 
 const prisma = new PrismaClient()
 
+
 async function main() {
+  await prisma.project.deleteMany()
+  await prisma.requiredDocument.deleteMany()
+  await prisma.otpVerification.deleteMany()
+  await prisma.user.deleteMany()
   const hashedPassword = await bcrypt.hash('password123', 10)
 
   // 1 Admin — seeded directly, approved by default
@@ -78,6 +88,20 @@ async function main() {
   }
 
   console.log('✅ Users seeded successfully')
+  const { landParcels } = await seedProjectsAndLandParcels(prisma)
+  console.log('✅ Projects and LandParcels seeded successfully')
+
+  await seedRequiredDocuments(prisma)
+  console.log('✅ Required documents seeded successfully')
+
+  await seedStatusHistory(prisma, landParcels)
+  console.log('✅ Status history seeded successfully')
+
+  await seedPlaceholderRisk(prisma, landParcels)
+  console.log('✅ Placeholder risk values seeded successfully')
+
+  await seedDocumentsAndFamilies(prisma, landParcels)
+  console.log('✅ Documents and families seeded successfully')
 }
 
 main()
