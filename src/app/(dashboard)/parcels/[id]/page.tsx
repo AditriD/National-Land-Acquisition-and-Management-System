@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/dashboard-layout'
 import { Badge } from '@/components/ui/badge'
 import { AdvanceStageButton } from '@/components/advance-stage-button'
 import { StatusTimeline } from '@/components/status-timeline'
+import { DocumentUploadForm } from '@/components/documents/document-upload-form'
 
 const riskColor: Record<string, string> = {
   LOW: 'bg-green-100 text-green-700',
@@ -19,7 +20,7 @@ const RISK_BOX_STYLES: Record<string, string> = {
 }
 
 const CAN_ADVANCE = ['DISTRICT', 'STATE', 'CENTRAL', 'ADMIN']
-const CAN_CREATE_PARCEL = ['DISTRICT', 'STATE','AGENCY']
+const CAN_CREATE_PARCEL = ['DISTRICT', 'STATE', 'AGENCY']
 
 export default async function ParcelDetailPage({
   params,
@@ -30,7 +31,11 @@ export default async function ParcelDetailPage({
   const session = await getServerSession(authOptions)
   const parcel = await prisma.landParcel.findUnique({
     where: { id },
-    include: { project: true, statusHistory: { orderBy: { changedAt: 'desc' } } },
+    include: {
+      project: true,
+      statusHistory: { orderBy: { changedAt: 'desc' } },
+      documents: { orderBy: { uploadedAt: 'desc' } },
+    },
   })
 
   if (!parcel) return <div className="p-6">Parcel not found</div>
@@ -53,10 +58,28 @@ export default async function ParcelDetailPage({
                 <p className="text-sm text-slate-700">{parcel.riskReason}</p>
               </div>
             </div>
-        )}
+          )}
           {session && CAN_ADVANCE.includes(session.user.role) && (
             <AdvanceStageButton parcelId={parcel.id} currentStage={parcel.status} />
           )}
+
+          <div className="mt-4">
+            <h3 className="font-semibold text-sm mb-2">Documents</h3>
+            {parcel.documents.length === 0 ? (
+              <p className="text-sm text-slate-400 mb-2">No documents uploaded yet.</p>
+            ) : (
+              <ul className="mb-2 space-y-1">
+                {parcel.documents.map((doc) => (
+                  <li key={doc.id} className="text-sm">
+                    <a href={doc.fileUrl} target="_blank" className="text-blue-600 hover:underline">
+                      {doc.docType} (v{doc.version})
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <DocumentUploadForm parcelId={parcel.id} />
+          </div>
         </div>
         <StatusTimeline history={parcel.statusHistory} />
       </div>
