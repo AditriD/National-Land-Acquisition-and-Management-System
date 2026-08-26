@@ -50,7 +50,7 @@ export default async function StateDashboard() {
     <DashboardLayout title={`State Dashboard — ${state ?? 'N/A'}`} role="STATE">
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">National Overview</h1>
+        <h1 className="text-2xl font-semibold">State Overview</h1>
         <ViewStatsButton />
       </div>
 

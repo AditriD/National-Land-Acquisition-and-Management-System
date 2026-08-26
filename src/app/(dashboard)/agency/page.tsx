@@ -46,7 +46,7 @@ export default async function AgencyDashboard() {
     <DashboardLayout title={`Agency Dashboard — ${agencyName ?? 'N/A'}`} role="AGENCY">
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">National Overview</h1>
+        <h1 className="text-2xl font-semibold">Agency Overview</h1>
         <ViewStatsButton />
       </div>
       

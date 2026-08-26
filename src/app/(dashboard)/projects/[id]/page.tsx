@@ -22,6 +22,8 @@ const RISK_STYLES: Record<string, string> = {
   HIGH: 'bg-red-100 text-red-700 hover:bg-red-100',
 }
 
+const CAN_CREATE_PARCEL = ['DISTRICT', 'STATE']
+
 export default async function ProjectDetailPage({
   params,
 }: {
@@ -94,7 +96,17 @@ export default async function ProjectDetailPage({
         </Card>
       </div>
 
-      <h2 className="font-semibold text-lg mb-4">Land Parcels</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold text-lg">Land Parcels</h2>
+        {session && CAN_CREATE_PARCEL.includes(session.user.role) && (
+          <Link
+            href={`/parcels/new?projectId=${project.id}`}
+            className="inline-flex items-center px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
+          >
+            + Add Parcel
+          </Link>
+        )}
+      </div>
 
       {project.parcels.length === 0 ? (
         <Card className="p-10 text-center text-slate-500">

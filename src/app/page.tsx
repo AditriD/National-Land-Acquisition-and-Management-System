@@ -1,69 +1,74 @@
-import Image from "next/image";
+import Link from 'next/link'
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center bg-gradient-to-b from-white to-slate-50">
+      <p className="text-sm font-medium text-blue-600 mb-3">
+        Ministry of Rural Development
+      </p>
+      <h1 className="text-4xl font-bold tracking-tight mb-4 max-w-2xl">
+        National Land Acquisition & Management System
+      </h1>
+      <p className="text-slate-600 max-w-xl mb-8">
+        A unified platform to digitize land acquisition — from proposal to
+        possession — with GIS mapping, role-based visibility, and
+        AI-assisted risk detection.
+      </p>
+
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
+        <Link
+          href="/signup"
+          className="inline-flex items-center px-6 py-3 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700"
+        >
+          Get Started
+        </Link>
+        <Link
+          href="/login"
+          className="inline-flex items-center px-6 py-3 rounded-md border border-slate-300 text-slate-700 font-medium hover:bg-slate-100"
+        >
+          Sign In
+        </Link>
+        <Link
+          href="/citizen-lookup"
+          className="inline-flex items-center px-6 py-3 rounded-md border border-slate-300 text-slate-700 font-medium hover:bg-slate-100"
+        >
+          Citizen Lookup
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl w-full mb-16">
+        {[
+          ['Multi-State', 'Highway, Railway & Irrigation projects'],
+          ['GIS Mapped', 'Live parcel-level location tracking'],
+          ['AI Risk Scoring', 'Predictive delay & dispute detection'],
+          ['Role-Based Access', 'Central to district-level visibility'],
+        ].map(([title, desc]) => (
+          <div key={title} className="border rounded-lg p-4 text-left bg-white">
+            <h3 className="font-semibold text-sm mb-1">{title}</h3>
+            <p className="text-xs text-slate-500">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="max-w-3xl text-left w-full">
+        <h2 className="text-lg font-semibold mb-4 text-center">How it works</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            ['1. Proposal', 'A requiring body submits a land acquisition request under the RFCTLARR Act, 2013.'],
+            ['2. Award & Compensation', 'Notification is issued, compensation is assessed and disbursed to landowners.'],
+            ['3. Possession & R&R', 'Land is taken into possession and rehabilitation & resettlement is completed.'],
+          ].map(([title, desc]) => (
+            <div key={title} className="p-4">
+              <h3 className="font-medium text-sm mb-1">{title}</h3>
+              <p className="text-xs text-slate-500">{desc}</p>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </div>
+
+      <p className="text-xs text-slate-400 mt-16">
+        Built for Smart India Hackathon 2026 · Problem Statement SIH26016
+      </p>
+    </main>
+  )
 }

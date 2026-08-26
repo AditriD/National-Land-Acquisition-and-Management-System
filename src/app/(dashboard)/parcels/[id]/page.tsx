@@ -12,7 +12,14 @@ const riskColor: Record<string, string> = {
   HIGH: 'bg-red-100 text-red-700',
 }
 
+const RISK_BOX_STYLES: Record<string, string> = {
+  LOW: 'border-green-200 bg-green-50',
+  MEDIUM: 'border-yellow-200 bg-yellow-50',
+  HIGH: 'border-red-200 bg-red-50',
+}
+
 const CAN_ADVANCE = ['DISTRICT', 'STATE', 'CENTRAL', 'ADMIN']
+const CAN_CREATE_PARCEL = ['DISTRICT', 'STATE','AGENCY']
 
 export default async function ParcelDetailPage({
   params,
@@ -39,11 +46,14 @@ export default async function ParcelDetailPage({
           <p>Stage: <span className="font-medium">{parcel.status}</span></p>
           <p>Compensation status: {parcel.compensationStatus}</p>
           {parcel.riskLevel && (
-            <>
+            <div className={`rounded-lg p-3 flex items-start gap-3 border ${RISK_BOX_STYLES[parcel.riskLevel]}`}>
               <Badge className={riskColor[parcel.riskLevel]}>{parcel.riskLevel}</Badge>
-              <p className="text-sm text-slate-600">{parcel.riskReason}</p>
-            </>
-          )}
+              <div>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Risk Reason</p>
+                <p className="text-sm text-slate-700">{parcel.riskReason}</p>
+              </div>
+            </div>
+        )}
           {session && CAN_ADVANCE.includes(session.user.role) && (
             <AdvanceStageButton parcelId={parcel.id} currentStage={parcel.status} />
           )}

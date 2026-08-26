@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { calculateRiskLevel } from '@/lib/risk'
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions)
@@ -9,7 +10,7 @@ export async function POST(req: Request) {
 
   const { role, district: userDistrict } = session.user
 
-  if (role !== 'AGENCY' && role !== 'DISTRICT' && role !== 'ADMIN') {
+  if (role !== 'AGENCY' && role !== 'DISTRICT' && role !== 'STATE') {
     return NextResponse.json({ error: 'You are not authorized to create parcels' }, { status: 403 })
   }
 
@@ -49,9 +50,23 @@ export async function POST(req: Request) {
         ownerPhone: ownerPhone || null,
       },
     })
-    return NextResponse.json(parcel)
+
+    const { riskLevel, riskReason } = calculateRiskLevel({
+      hasDispute: false,
+      awardDate: null,
+      compensationStatus: 'PENDING',
+      daysInStage: 0,
+      missingDocCount: 0,
+    })
+
+    const updated = await prisma.landParcel.update({
+      where: { id: parcel.id },
+      data: { riskLevel, riskReason, riskUpdatedAt: new Date() },
+    })
+
+    return NextResponse.json(updated)
+
   } catch (err: any) {
-    // unique constraint on [projectId, surveyNumber]
     if (err.code === 'P2002') {
       return NextResponse.json(
         { error: 'A parcel with this survey number already exists for this project' },

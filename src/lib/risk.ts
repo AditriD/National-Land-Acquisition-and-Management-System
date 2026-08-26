@@ -4,6 +4,8 @@ type RiskInput = {
   hasDispute: boolean
   awardDate: Date | null
   compensationStatus: CompensationStatus
+  daysInStage: number
+  missingDocCount: number
 }
 
 type RiskResult = {
@@ -32,7 +34,6 @@ export function calculateRiskLevel(parcel: RiskInput): RiskResult {
       }
     }
 
-    // Approaching the deadline but not there yet — flag as MEDIUM instead of silently LOW
     const daysRemaining = AWARD_DEADLINE_DAYS - daysSinceAward
     if (daysRemaining <= 60) {
       return {
@@ -41,11 +42,26 @@ export function calculateRiskLevel(parcel: RiskInput): RiskResult {
       }
     }
 
-    // Partial payment on an otherwise-fine timeline is worth a soft flag too
     if (parcel.compensationStatus === 'PARTIAL') {
       return { riskLevel: 'MEDIUM', riskReason: 'Compensation only partially disbursed' }
     }
   }
 
-  return { riskLevel: 'LOW', riskReason: 'No hard-rule risk factors detected' }
+  // Soft rule: stage stagnation + missing documents
+  if (parcel.daysInStage > 30 && parcel.missingDocCount > 0) {
+    return {
+      riskLevel: 'HIGH',
+      riskReason: `Stuck ${parcel.daysInStage} days in stage with ${parcel.missingDocCount} missing document(s)`,
+    }
+  }
+  if (parcel.daysInStage > 30 || parcel.missingDocCount > 0) {
+    return {
+      riskLevel: 'MEDIUM',
+      riskReason: parcel.daysInStage > 30
+        ? `${parcel.daysInStage} days in current stage`
+        : `${parcel.missingDocCount} missing document(s)`,
+    }
+  }
+
+  return { riskLevel: 'LOW', riskReason: 'No risk factors detected' }
 }
