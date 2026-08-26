@@ -4,7 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import { Landmark, Bell, ChevronDown, UserCircle, LogOut, LayoutDashboard } from 'lucide-react'
+import { Landmark, ChevronDown, UserCircle, LogOut, LayoutDashboard } from 'lucide-react'
+import { NotificationDropdown } from '@/components/notification-dropdown'
 
 const roleHome: Record<string, string> = {
   CENTRAL: '/central',
@@ -37,9 +38,7 @@ export function HeaderBar() {
 
   const homeHref = session ? (roleHome[session.user.role] ?? '/') : '/'
 
-  const displayLinks = session?.user
-    ? NAV_LINKS.map((l) => (l.label === 'Home' ? { ...l, href: homeHref } : l))
-    : NAV_LINKS
+  const displayLinks = NAV_LINKS
 
   return (
     <header
@@ -84,16 +83,7 @@ export function HeaderBar() {
         {/* RIGHT */}
         <div className="flex items-center gap-3 shrink-0">
           {session?.user && (
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="relative w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/15 transition-colors"
-            >
-              <Bell className="w-4 h-4" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] font-semibold flex items-center justify-center">
-                3
-              </span>
-            </button>
+            <NotificationDropdown />
           )}
 
           {session?.user ? (
@@ -138,7 +128,7 @@ export function HeaderBar() {
           ) : (
             <Link
               href="/login"
-              className="text-sm font-semibold bg-gold text-navy-dark px-4 py-1.5 rounded-md hover:bg-gold-light transition-colors"
+              className="text-sm font-semibold bg-navy-dark text-white px-4 py-1.5 rounded-md hover:bg-navy transition-colors"
             >
               Log In
             </Link>

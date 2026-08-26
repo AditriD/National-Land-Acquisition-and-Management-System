@@ -137,10 +137,16 @@ export default function LoginPage() {
     }
   }
 
-  if (step === 'otp') {
+    if (step === 'otp') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Card className="p-6 w-full max-w-sm">
+      <main
+        className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-cover bg-center relative"
+        style={{ backgroundImage: "url('/images/login.jpg')" }}
+      >
+        {/* Dark overlay over the background */}
+        <div className="absolute inset-0 bg-[#071426]/80" />
+
+        <Card className="relative p-6 w-full max-w-sm bg-[#f8fafc]/95 backdrop-blur-md shadow-2xl">
           <h1 className="text-xl font-semibold mb-2 text-slate-900">Enter verification code</h1>
           <p className="text-sm text-slate-500 mb-6">
             Enter the 6-digit code sent to <span className="font-medium">{email}</span>
@@ -177,7 +183,7 @@ export default function LoginPage() {
             </div>
           </form>
         </Card>
-      </div>
+      </main>
     )
   }
 

@@ -81,12 +81,30 @@ export default function NewProjectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-lg mx-auto p-6">
+    <div style={{ position: 'relative', minHeight: '100vh' }} className="bg-slate-50">
+      {/* Background image — inline styles so it always renders */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "url('/images/dashboard.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.12,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div style={{ position: 'relative', zIndex: 1 }} className="max-w-lg mx-auto p-6">
         <div className="mb-6">
           <BackButton />
         </div>
-        <Card className="p-8">
+        <Card className="p-8 bg-white/95 backdrop-blur-sm">
           <h1 className="text-xl font-bold text-navy-dark mb-6">New Project</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
@@ -124,7 +142,7 @@ export default function NewProjectPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gold text-navy-dark font-semibold hover:bg-gold-light"
+              className="w-full bg-navy-dark text-white font-semibold hover:bg-navy"
             >
               {loading ? 'Creating...' : 'Create Project'}
             </Button>

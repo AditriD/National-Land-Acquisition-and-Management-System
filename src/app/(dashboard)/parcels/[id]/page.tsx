@@ -57,7 +57,7 @@ export default async function ParcelDetailPage({
               Survey No: {parcel.surveyNumber} &middot; {parcel.areaHectares} ha
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="gov-badge bg-gold/20 text-gold border border-gold/30">
+              <span className="gov-badge bg-white/10 text-white border border-white/20">
                 {parcel.status.replace(/_/g, ' ')}
               </span>
               <span className="gov-badge bg-white/10 text-white border border-white/20">
@@ -92,7 +92,7 @@ export default async function ParcelDetailPage({
                 {parcel.documents.map((doc) => (
                   <li key={doc.id} className="text-sm flex items-center gap-2">
                     <ExternalLink className="w-3 h-3 text-slate-400" />
-                    <a href={doc.fileUrl} target="_blank" className="text-gold hover:text-gold-light font-medium transition-colors">
+                    <a href={doc.fileUrl} target="_blank" className="text-navy-dark hover:text-navy font-medium transition-colors">
                       {doc.docType} (v{doc.version})
                     </a>
                   </li>

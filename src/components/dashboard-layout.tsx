@@ -1,6 +1,7 @@
 'use client'
-import { LucideIcon } from 'lucide-react'
+
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { Landmark } from 'lucide-react'
 
@@ -24,21 +25,47 @@ export function DashboardLayout({
   const { data: session } = useSession()
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="bg-navy-dark border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Link href={session ? (roleHome[session.user.role] ?? '/') : '/'} className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center">
-              <Landmark className="w-4 h-4 text-gold" />
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/images/road.jpg"
+          alt="Dashboard background"
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Light overlay for readability */}
+        <div className="absolute inset-0 bg-slate-50/60" />
+      </div>
+
+      {/* Dashboard Title Bar */}
+      <div className="bg-[#1F2D46] border-b border-white/10 px-8 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link
+            href={session ? (roleHome[session.user.role] ?? '/') : '/'}
+            className="flex items-center gap-4"
+          >
+            <span className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+              <Landmark className="w-8 h-8 text-slate-200" />
             </span>
-            <h2 className="text-base font-semibold text-white">{title}</h2>
+
+            <h2 className="text-3xl font-bold text-white">
+              {title}
+            </h2>
           </Link>
         </div>
-        <span className="text-xs px-3 py-1 bg-gold/20 text-gold border border-gold/30 rounded-full font-medium tracking-wide">
+
+        <span className="text-base px-6 py-2 bg-navy-dark/80 text-slate-200 border border-white/15 rounded-full font-medium tracking-wide">
           {role}
         </span>
       </div>
-      <main className="p-6 max-w-7xl mx-auto">{children}</main>
+
+      {/* Dashboard Content */}
+      <main className="relative p-8 max-w-7xl mx-auto">
+        {children}
+      </main>
     </div>
   )
 }

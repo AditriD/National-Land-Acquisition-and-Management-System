@@ -14,10 +14,10 @@ export function StatusTimeline({ history }: { history: HistoryEntry[] }) {
   return (
     <Card>
       <h3 className="font-bold text-navy-dark text-sm mb-4">Status History</h3>
-      <ul className="space-y-3 border-l-2 border-gold/30 pl-4">
+      <ul className="space-y-3 border-l-2 border-navy/20 pl-4">
         {history.map((entry) => (
           <li key={entry.id} className="text-sm relative">
-            <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-gold border-2 border-white" />
+            <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-navy-dark border-2 border-white" />
             <p>
               {entry.fromStage ? `${entry.fromStage.replace(/_/g, ' ')} → ` : ''}
               <span className="font-semibold text-navy-dark">{entry.toStage.replace(/_/g, ' ')}</span>

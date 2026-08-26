@@ -61,7 +61,7 @@ export default async function AdminPage() {
                   <TableCell>{u.state}{u.district ? ` / ${u.district}` : ''}</TableCell>
                   <TableCell>
                     {u.verificationDocUrl ? (
-                      <a href={u.verificationDocUrl} target="_blank" className="text-gold hover:text-gold-light underline font-medium">View</a>
+                      <a href={u.verificationDocUrl} target="_blank" className="text-navy-dark hover:text-navy underline font-medium">View</a>
                     ) : (
                       <span className="text-slate-400">—</span>
                     )}

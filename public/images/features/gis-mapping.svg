@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" fill="none">
+  <rect width="400" height="200" fill="#1a2744"/>
+  <g opacity="0.15">
+    <path d="M0 100h400" stroke="#c8952d" stroke-width="0.5"/>
+    <path d="M0 50h400" stroke="#c8952d" stroke-width="0.3"/>
+    <path d="M0 150h400" stroke="#c8952d" stroke-width="0.3"/>
+    <path d="M100 0v200" stroke="#c8952d" stroke-width="0.3"/>
+    <path d="M200 0v200" stroke="#c8952d" stroke-width="0.3"/>
+    <path d="M300 0v200" stroke="#c8952d" stroke-width="0.3"/>
+  </g>
+  <path d="M50 150 L120 90 L200 120 L280 60 L350 100 L350 170 L50 170Z" fill="#22c55e" fill-opacity="0.25" stroke="#22c55e" stroke-width="1.5"/>
+  <path d="M180 50 L220 50 L220 90 L180 90Z" fill="#c8952d" fill-opacity="0.3" stroke="#c8952d" stroke-width="1"/>
+  <circle cx="120" cy="90" r="5" fill="#c8952d"/>
+  <circle cx="200" cy="120" r="5" fill="#c8952d"/>
+  <circle cx="280" cy="60" r="5" fill="#c8952d"/>
+  <path d="M115 90 L120 90 L120 85" stroke="#fff" stroke-width="1.5" fill="none"/>
+  <path d="M195 120 L200 120 L200 115" stroke="#fff" stroke-width="1.5" fill="none"/>
+  <path d="M275 60 L280 60 L280 55" stroke="#fff" stroke-width="1.5" fill="none"/>
+  <text x="200" y="185" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="sans-serif">LAT 28.6139 / LON 77.2090</text>
+</svg>

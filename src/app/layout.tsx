@@ -4,6 +4,7 @@ import "./globals.css";
 import 'leaflet/dist/leaflet.css'
 import { Providers } from "@/components/providers";
 import { ConditionalHeader } from '@/components/conditional-header'
+import { DashboardSidebar } from "@/components/dashboard-sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

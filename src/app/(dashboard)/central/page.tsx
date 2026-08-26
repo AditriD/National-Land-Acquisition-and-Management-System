@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { DashboardLayout } from '@/components/dashboard-layout'
 import { Card } from '@/components/ui/card'
+import Image from 'next/image'
 import {
   Table,
   TableBody,
@@ -60,16 +61,16 @@ export default async function CentralDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+        <Card className="gov-stat-card group hover:border-navy/30 hover:shadow-md transition-all">
           <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
             <Building2 className="w-5 h-5 text-navy" />
           </div>
           <p className="text-sm text-slate-500">Total Projects</p>
           <p className="text-3xl font-bold text-navy-dark mt-1">{totalProjects}</p>
         </Card>
-        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
-          <div className="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center mb-3 group-hover:bg-gold/25 transition-colors">
-            <MapPin className="w-5 h-5 text-gold" />
+        <Card className="gov-stat-card group hover:border-navy/30 hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
+            <MapPin className="w-5 h-5 text-navy" />
           </div>
           <p className="text-sm text-slate-500">Total Parcels</p>
           <p className="text-3xl font-bold text-navy-dark mt-1">{totalParcels}</p>
@@ -113,7 +114,7 @@ export default async function CentralDashboard() {
         {canCreate && (
           <Link
             href="/projects/new"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold bg-gold text-navy-dark px-4 py-2 rounded-md hover:bg-gold-light transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold bg-navy-dark text-white px-4 py-2 rounded-md hover:bg-navy transition-colors"
           >
             <Plus className="w-4 h-4" /> New Project
           </Link>
@@ -146,7 +147,7 @@ export default async function CentralDashboard() {
                 return (
                   <TableRow key={p.id}>
                     <TableCell>
-                      <Link href={`/projects/${p.id}`} className="text-gold hover:text-gold-light font-medium transition-colors">
+                      <Link href={`/projects/${p.id}`} className="text-navy-dark hover:text-navy font-semibold transition-colors">
                         {p.name}
                       </Link>
                     </TableCell>

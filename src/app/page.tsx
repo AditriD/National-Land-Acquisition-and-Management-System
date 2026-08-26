@@ -27,31 +27,31 @@ const FEATURES = [
     icon: MapIcon,
     title: 'GIS Mapping',
     desc: 'Real-time land parcel visualization and spatial analysis.',
-    image: '/images/features/gis-mapping.jpg',
+    image: '/images/features/gis-mapping.svg',
   },
   {
     icon: Users,
     title: 'Role-Based Access',
     desc: 'Tailored dashboards for Agency, State, District and Central users.',
-    image: '/images/features/role-based-access.jpg',
+    image: '/images/features/role-based-access.svg',
   },
   {
     icon: ShieldAlert,
     title: 'AI-Assisted Risk Detection',
     desc: 'Early warning for delays, disputes and acquisition risks.',
-    image: '/images/features/risk-detection.jpg',
+    image: '/images/features/risk-detection.svg',
   },
   {
     icon: FileText,
     title: 'Document Management',
     desc: 'Secure upload, review and tracking of land records.',
-    image: '/images/features/document-management.jpg',
+    image: '/images/features/document-management.svg',
   },
   {
     icon: Scale,
     title: 'Transparent Workflow',
     desc: 'End-to-end tracking from proposal to possession.',
-    image: '/images/features/transparent-workflow.jpg',
+    image: '/images/features/transparent-workflow.svg',
   },
 ]
 
@@ -183,7 +183,6 @@ export default async function LandingPage() {
                 <div className="p-5 flex-1 flex flex-col">
                   <h3 className="font-semibold text-navy-dark mb-1.5">{f.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed flex-1">{f.desc}</p>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-gold self-end mt-3 transition-colors" />
                 </div>
               </div>
             ))}
@@ -219,8 +218,16 @@ export default async function LandingPage() {
       </section>
 
       {/* ---------- LIFECYCLE ---------- */}
-      <section id="lifecycle" className="bg-navy-dark text-white py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="lifecycle" className="relative bg-navy-dark text-white py-16 md:py-20 overflow-hidden">
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-25"
+            style={{ backgroundImage: "url('/images/dashboard.jpg')" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-navy-dark/90 via-navy-dark/2 to-navy-dark/0" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
             <div>
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-2">Land Acquisition Lifecycle</h2>

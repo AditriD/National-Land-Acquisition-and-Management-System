@@ -42,34 +42,55 @@ export default function ResourcesIndexPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="bg-navy-dark text-white py-10">
-        <div className="max-w-5xl mx-auto px-6">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition-colors mb-4">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-          <h1 className="font-display text-3xl font-bold">Resources</h1>
-          <p className="text-slate-300 text-sm mt-2 max-w-xl">
-            Official documentation, guidelines, and support for the National Land Acquisition &amp; Management System.
-          </p>
-        </div>
-      </div>
+    <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      {/* Background image — fully inline styles, no Tailwind dependency */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "url('/images/road.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.15,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {resources.map((r) => (
-            <Link
-              key={r.title}
-              href={r.href}
-              className="group bg-white rounded-xl border border-slate-200 p-6 hover:border-gold hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <div className="w-12 h-12 rounded-full bg-navy/10 flex items-center justify-center mb-4 group-hover:bg-gold/20 transition-colors">
-                <span className="text-xl">{r.icon}</span>
-              </div>
-              <h3 className="font-semibold text-navy-dark mb-1.5 group-hover:text-gold transition-colors">{r.title}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{r.desc}</p>
+      {/* Content sits above the background */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="bg-navy-dark text-white py-10">
+          <div className="max-w-5xl mx-auto px-6">
+            <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition-colors mb-4">
+              <ArrowLeft className="w-4 h-4" /> Back to Home
             </Link>
-          ))}
+            <h1 className="font-display text-3xl font-bold">Resources</h1>
+            <p className="text-slate-300 text-sm mt-2 max-w-xl">
+              Official documentation, guidelines, and support for the National Land Acquisition &amp; Management System.
+            </p>
+          </div>
+        </div>
+
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {resources.map((r) => (
+              <Link
+                key={r.title}
+                href={r.href}
+                className="group bg-white rounded-xl border border-slate-200 p-6 hover:border-gold hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <div className="w-12 h-12 rounded-full bg-navy/10 flex items-center justify-center mb-4 group-hover:bg-gold/20 transition-colors">
+                  <span className="text-xl">{r.icon}</span>
+                </div>
+                <h3 className="font-semibold text-navy-dark mb-1.5 group-hover:text-gold transition-colors">{r.title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{r.desc}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

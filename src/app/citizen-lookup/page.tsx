@@ -1,10 +1,12 @@
 'use client'
+
 import { useState } from 'react'
+import Image from 'next/image'
+
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Search, MapPin, ShieldCheck, ArrowRight } from 'lucide-react'
+import { MapPin, ShieldCheck, ArrowRight } from 'lucide-react'
 
 type Step = 'form' | 'otp' | 'result'
 
@@ -36,21 +38,41 @@ export default function CitizenLookupPage() {
     }
 
     setLoading(true)
+
     try {
       const res = await fetch('/api/citizen/send-otp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ surveyNumber, phone }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          surveyNumber,
+          phone,
+        }),
       })
+
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'No matching record found')
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || 'No matching record found'
+        )
+      }
 
       setStep('otp')
+
       if (data.simulatedOtp) {
-        console.log('Simulated OTP (demo only):', data.simulatedOtp)
+        console.log(
+          'Simulated OTP (demo only):',
+          data.simulatedOtp
+        )
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Something went wrong'
+      )
     } finally {
       setLoading(false)
     }
@@ -66,166 +88,394 @@ export default function CitizenLookupPage() {
     }
 
     setLoading(true)
+
     try {
       const res = await fetch('/api/citizen/verify-otp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ surveyNumber, phone, otp }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          surveyNumber,
+          phone,
+          otp,
+        }),
       })
+
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Invalid code')
+
+      if (!res.ok) {
+        throw new Error(
+          data.error || 'Invalid code'
+        )
+      }
 
       setResult(data.parcel)
       setStep('result')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Invalid or expired code')
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Invalid or expired code'
+      )
     } finally {
       setLoading(false)
     }
   }
 
+  /* =====================================================
+     RESULT SCREEN
+  ===================================================== */
+
   if (step === 'result' && result) {
     return (
       <div className="min-h-screen bg-slate-50">
-        {/* Header banner */}
+
+        {/* BLUE HEADER - UNCHANGED */}
         <div className="bg-navy-dark text-white py-8">
           <div className="max-w-2xl mx-auto px-6">
+
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5 text-gold" />
+
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold">Your Parcel Status</h1>
+
+              <h1 className="text-2xl font-bold">
+                Your Parcel Status
+              </h1>
+
             </div>
-            <p className="text-sm text-slate-300">Survey No. {result.surveyNumber}</p>
+
+            <p className="text-sm text-slate-300">
+              Survey No. {result.surveyNumber}
+            </p>
+
           </div>
         </div>
 
-        <div className="max-w-2xl mx-auto px-6 py-8">
-          <Card className="p-6">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                <span className="text-sm text-slate-500">Project</span>
-                <span className="text-sm font-semibold text-navy-dark">{result.projectName}</span>
+        {/* =================================================
+            WHITE AREA + FULL BACKGROUND ROAD IMAGE
+        ================================================= */}
+
+        <div className="relative min-h-[calc(100vh-150px)] overflow-hidden">
+
+          {/* FULL BACKGROUND IMAGE */}
+          <div className="absolute inset-0">
+            <Image
+              src="/images/road.jpg"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+
+          {/* WHITE TRANSPARENT OVERLAY */}
+          <div className="absolute inset-0 bg-white/50" />
+
+          {/* CONTENT */}
+          <div className="relative z-10 max-w-2xl mx-auto px-6 py-8">
+
+            <Card className="p-6">
+
+              <div className="space-y-3">
+
+                <div className="flex justify-between items-center py-3 border-b border-slate-100">
+                  <span className="text-sm text-slate-500">
+                    Project
+                  </span>
+
+                  <span className="text-sm font-semibold text-navy-dark">
+                    {result.projectName}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center py-3 border-b border-slate-100">
+                  <span className="text-sm text-slate-500">
+                    Current Stage
+                  </span>
+
+                  <span className="gov-badge bg-navy/10 text-navy-dark">
+                    {result.status.replace(/\_/g, ' ')}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center py-3 border-b border-slate-100">
+                  <span className="text-sm text-slate-500">
+                    Compensation
+                  </span>
+
+                  <span className="text-sm font-semibold text-navy-dark">
+                    {result.compensationAmount
+                      ? `₹${result.compensationAmount.toLocaleString()}`
+                      : 'Not yet determined'}
+                    {' — '}
+                    {result.compensationStatus}
+                  </span>
+                </div>
+
               </div>
-              <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                <span className="text-sm text-slate-500">Current Stage</span>
-                <span className="gov-badge bg-navy/10 text-navy-dark">{result.status.replace(/_/g, ' ')}</span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                <span className="text-sm text-slate-500">Compensation</span>
-                <span className="text-sm font-semibold text-navy-dark">
-                  {result.compensationAmount ? `₹${result.compensationAmount.toLocaleString()}` : 'Not yet determined'}
-                  {' — '}
-                  {result.compensationStatus}
-                </span>
-              </div>
-            </div>
-            <Button
-              className="w-full mt-6 bg-gold text-navy-dark font-semibold hover:bg-gold-light"
-              variant="outline"
-              onClick={() => {
-                setStep('form')
-                setSurveyNumber('')
-                setPhone('')
-                setOtp('')
-                setResult(null)
-              }}
-            >
-              Look up another parcel
-            </Button>
-          </Card>
+
+              <Button
+                className="w-full mt-6 bg-navy-dark text-white font-semibold hover:bg-navy"
+                variant="outline"
+                onClick={() => {
+                  setStep('form')
+                  setSurveyNumber('')
+                  setPhone('')
+                  setOtp('')
+                  setResult(null)
+                  setError('')
+                }}
+              >
+                Look up another parcel
+              </Button>
+
+            </Card>
+
+          </div>
         </div>
       </div>
     )
   }
+
+  /* =====================================================
+     OTP SCREEN
+  ===================================================== */
 
   if (step === 'otp') {
     return (
       <div className="min-h-screen bg-slate-50">
+
+        {/* BLUE HEADER - UNCHANGED */}
         <div className="bg-navy-dark text-white py-8">
+
           <div className="max-w-2xl mx-auto px-6">
+
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5 text-gold" />
+
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold">Verify your phone</h1>
+
+              <h1 className="text-2xl font-bold">
+                Verify your phone
+              </h1>
+
             </div>
+
             <p className="text-sm text-slate-300">
-              Enter the 6-digit code sent to <span className="font-medium">{phone}</span>
+              Enter the 6-digit code sent to{' '}
+              <span className="font-medium">
+                {phone}
+              </span>
             </p>
+
           </div>
+
         </div>
 
-        <div className="max-w-2xl mx-auto px-6 py-8">
-          <Card className="p-6 max-w-sm mx-auto">
-            <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-3 mb-4 border border-amber-200">
-              Demo mode: check your browser console for the simulated code.
-            </p>
-            <form onSubmit={handleVerify} className="space-y-4">
-              <Input
-                placeholder="6-digit code"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                inputMode="numeric"
-                maxLength={6}
-                className="text-center tracking-widest text-lg"
-              />
-              {error && <p className="text-red-500 text-sm">{error}</p>}
-              <Button type="submit" className="w-full bg-gold text-navy-dark font-semibold hover:bg-gold-light" disabled={loading}>
-                {loading ? 'Verifying...' : 'Verify'}
-              </Button>
-              <button
-                type="button"
-                onClick={() => setStep('form')}
-                className="text-sm text-slate-500 hover:text-navy-dark transition-colors w-full text-center"
+        {/* =================================================
+            WHITE AREA + FULL BACKGROUND ROAD IMAGE
+        ================================================= */}
+
+        <div className="relative min-h-[calc(100vh-150px)] overflow-hidden">
+
+          {/* FULL BACKGROUND IMAGE */}
+          <div className="absolute inset-0">
+            <Image
+              src="/images/road.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+
+          {/* WHITE TRANSPARENT OVERLAY */}
+          <div className="absolute inset-0 bg-white/50" />
+
+          {/* CONTENT */}
+          <div className="relative z-10 max-w-2xl mx-auto px-6 py-8">
+
+            <Card className="p-6 max-w-sm mx-auto">
+
+              <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-3 mb-4 border border-amber-200">
+                Demo mode: check your browser console for the simulated code.
+              </p>
+
+              <form
+                onSubmit={handleVerify}
+                className="space-y-4"
               >
-                Back
-              </button>
-            </form>
-          </Card>
+
+                <Input
+                  placeholder="6-digit code"
+                  value={otp}
+                  onChange={(e) =>
+                    setOtp(
+                      e.target.value
+                        .replace(/\D/g, '')
+                        .slice(0, 6)
+                    )
+                  }
+                  inputMode="numeric"
+                  maxLength={6}
+                  className="text-center tracking-widest text-lg"
+                />
+
+                {error && (
+                  <p className="text-red-500 text-sm">
+                    {error}
+                  </p>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-navy-dark text-white font-semibold hover:bg-navy"
+                  disabled={loading}
+                >
+                  {loading
+                    ? 'Verifying...'
+                    : 'Verify'}
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep('form')
+                    setError('')
+                  }}
+                  className="text-sm text-slate-500 hover:text-navy-dark transition-colors w-full text-center"
+                >
+                  Back
+                </button>
+
+              </form>
+
+            </Card>
+
+          </div>
         </div>
       </div>
     )
   }
 
+  /* =====================================================
+     MAIN FORM SCREEN
+  ===================================================== */
+
   return (
     <div className="min-h-screen bg-slate-50">
+
+      {/* =================================================
+          BLUE HEADER - UNCHANGED
+      ================================================= */}
+
       <div className="bg-navy-dark text-white py-10">
+
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4">
-            <MapPin className="w-7 h-7 text-gold" />
+
+          <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4">
+            <MapPin className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">Check Your Land Status</h1>
+
+          <h1 className="text-3xl font-bold mb-2">
+            Check Your Land Status
+          </h1>
+
           <p className="text-slate-300 text-sm max-w-md mx-auto">
-            Enter your survey number and registered phone number to check the current status of your land acquisition.
+            Enter your survey number and registered phone number
+            to check the current status of your land acquisition.
           </p>
+
         </div>
+
       </div>
 
-      <div className="max-w-2xl mx-auto px-6 py-8">
-        <Card className="p-8 max-w-md mx-auto">
-          <form onSubmit={handleLookup} className="space-y-4">
-            <Input
-              placeholder="Survey Number"
-              value={surveyNumber}
-              onChange={(e) => setSurveyNumber(e.target.value)}
-            />
-            <Input
-              placeholder="Registered Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full bg-gold text-navy-dark font-semibold hover:bg-gold-light" disabled={loading}>
-              {loading ? 'Checking...' : (
-                <span className="flex items-center gap-2">
-                  Continue <ArrowRight className="w-4 h-4" />
-                </span>
+      {/* =================================================
+          WHITE AREA + FULL BACKGROUND ROAD IMAGE
+      ================================================= */}
+
+      <div className="relative min-h-[calc(100vh-190px)] overflow-hidden">
+
+        {/* FULL BACKGROUND IMAGE */}
+        <div className="absolute inset-0">
+
+          <Image
+            src="/images/road.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+
+        </div>
+
+        {/* WHITE TRANSPARENT OVERLAY */}
+        <div className="absolute inset-0 bg-white/50" />
+
+        {/* =================================================
+            FORM CONTENT
+        ================================================= */}
+
+        <div className="relative z-10 max-w-2xl mx-auto px-6 py-8">
+
+          <Card className="p-8 max-w-md mx-auto">
+
+            <form
+              onSubmit={handleLookup}
+              className="space-y-4"
+            >
+
+              <Input
+                placeholder="Survey Number"
+                value={surveyNumber}
+                onChange={(e) =>
+                  setSurveyNumber(e.target.value)
+                }
+              />
+
+              <Input
+                placeholder="Registered Phone Number"
+                value={phone}
+                onChange={(e) =>
+                  setPhone(e.target.value)
+                }
+              />
+
+              {error && (
+                <p className="text-red-500 text-sm">
+                  {error}
+                </p>
               )}
-            </Button>
-          </form>
-        </Card>
+
+              <Button
+                type="submit"
+                className="w-full bg-navy-dark text-white font-semibold hover:bg-navy"
+                disabled={loading}
+              >
+                {loading ? (
+                  'Checking...'
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Continue
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                )}
+              </Button>
+
+            </form>
+
+          </Card>
+
+        </div>
+
       </div>
+
     </div>
   )
 }

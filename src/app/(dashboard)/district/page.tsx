@@ -61,16 +61,16 @@ export default async function DistrictDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+        <Card className="gov-stat-card group hover:border-navy/30 hover:shadow-md transition-all">
           <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
             <Building2 className="w-5 h-5 text-navy" />
           </div>
           <p className="text-sm text-slate-500">Projects Active Here</p>
           <p className="text-3xl font-bold text-navy-dark mt-1">{projects.length}</p>
         </Card>
-        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
-          <div className="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center mb-3 group-hover:bg-gold/25 transition-colors">
-            <MapPin className="w-5 h-5 text-gold" />
+        <Card className="gov-stat-card group hover:border-navy/30 hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
+            <MapPin className="w-5 h-5 text-navy" />
           </div>
           <p className="text-sm text-slate-500">Parcels in {district ?? 'District'}</p>
           <p className="text-3xl font-bold text-navy-dark mt-1">{totalParcels}</p>
@@ -102,13 +102,13 @@ export default async function DistrictDashboard() {
               <Link
                 key={p.id}
                 href={`/projects/${p.id}`}
-                className="group flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-gold hover:shadow-md transition-all bg-white"
+                className="group flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-navy/40 hover:shadow-md transition-all bg-white"
               >
-                <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center shrink-0 group-hover:bg-gold/20 transition-colors">
-                  <FolderOpen className="w-5 h-5 text-navy group-hover:text-gold transition-colors" />
+                <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center shrink-0 group-hover:bg-navy/20 transition-colors">
+                  <FolderOpen className="w-5 h-5 text-navy group-hover:text-navy-dark transition-colors" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-semibold text-navy-dark text-sm truncate group-hover:text-gold transition-colors">{p.name}</p>
+                  <p className="font-semibold text-navy-dark text-sm truncate group-hover:text-navy transition-colors">{p.name}</p>
                   <p className="text-xs text-slate-500">{p.parcels.length} parcel{p.parcels.length !== 1 ? 's' : ''} in your district</p>
                 </div>
               </Link>
@@ -145,13 +145,13 @@ export default async function DistrictDashboard() {
                     <TableCell>
                       <Link
                         href={`/parcels/${parcel.id}`}
-                        className="text-gold hover:text-gold-light font-medium transition-colors"
+                        className="text-navy-dark hover:text-navy font-semibold transition-colors"
                       >
                         {parcel.surveyNumber}
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Link href={`/projects/${p.id}`} className="text-slate-600 hover:text-gold transition-colors">
+                      <Link href={`/projects/${p.id}`} className="text-slate-600 hover:text-navy transition-colors">
                         {p.name}
                       </Link>
                     </TableCell>

@@ -157,7 +157,7 @@ export default function NewParcelPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gold text-navy-dark font-semibold hover:bg-gold-light"
+              className="w-full bg-navy-dark text-white font-semibold hover:bg-navy"
             >
               {loading ? 'Creating...' : 'Add Parcel'}
             </Button>

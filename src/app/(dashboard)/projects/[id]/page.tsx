@@ -67,7 +67,7 @@ export default async function ProjectDetailPage({
               {project.sector} &bull; {project.state} &bull; {project.implementingAgency}
             </p>
           </div>
-          <Badge variant="outline" className="bg-gold/20 text-gold border-gold/30">{project.ministry}</Badge>
+          <Badge variant="outline" className="bg-white/10 text-white border-white/20">{project.ministry}</Badge>
         </div>
         {project.targetCompletion && (
           <p className="text-sm text-slate-300 mt-4">
@@ -77,7 +77,7 @@ export default async function ProjectDetailPage({
       </Card>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+        <Card className="gov-stat-card group hover:border-navy/30 hover:shadow-md transition-all">
           <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3">
             <MapPin className="w-5 h-5 text-navy" />
           </div>
@@ -114,7 +114,7 @@ export default async function ProjectDetailPage({
         {session && CAN_CREATE_PARCEL.includes(session.user.role) && (
           <Link
             href={`/parcels/new?projectId=${project.id}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-gold text-navy-dark text-sm font-semibold hover:bg-gold-light transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-navy-dark text-white text-sm font-semibold hover:bg-navy transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Parcel
           </Link>
@@ -144,7 +144,7 @@ export default async function ProjectDetailPage({
                   <TableCell>
                     <Link
                       href={`/parcels/${parcel.id}`}
-                      className="text-gold hover:text-gold-light font-medium transition-colors"
+                      className="text-navy-dark hover:text-navy font-semibold transition-colors"
                     >
                       {parcel.surveyNumber}
                     </Link>
