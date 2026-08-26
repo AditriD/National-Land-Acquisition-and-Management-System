@@ -13,7 +13,7 @@ const RISK_COLORS: Record<string, string> = {
 export function RiskChart({ data }: { data: DataPoint[] }) {
   return (
     <div>
-      <h3 className="text-sm font-medium mb-2">Risk Distribution</h3>
+      <h3 className="text-sm font-bold text-navy-dark mb-3">Risk Distribution</h3>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
           <Pie
@@ -31,7 +31,14 @@ export function RiskChart({ data }: { data: DataPoint[] }) {
               <Cell key={entry.name} fill={RISK_COLORS[entry.name] ?? '#94a3b8'} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#0a1128',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              color: '#fff',
+            }}
+          />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

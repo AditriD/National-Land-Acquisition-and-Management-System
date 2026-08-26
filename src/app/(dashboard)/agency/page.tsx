@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { getScopedParcels } from '@/lib/get-scoped-parcels'
 import { ParcelMap } from '@/components/parcel-map-client'
 import { ViewStatsButton } from '@/components/dashboard/view-stats-button'
+import { Building2, MapPin, ShieldAlert } from 'lucide-react'
 
 const parcels = await getScopedParcels()
 
@@ -44,37 +45,44 @@ export default async function AgencyDashboard() {
 
   return (
     <DashboardLayout title={`Agency Dashboard — ${agencyName ?? 'N/A'}`} role="AGENCY">
-
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">Agency Overview</h1>
+        <h1 className="text-2xl font-bold text-navy-dark">Agency Overview</h1>
         <ViewStatsButton />
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
+            <Building2 className="w-5 h-5 text-navy" />
+          </div>
           <p className="text-sm text-slate-500">Total Projects</p>
-          <p className="text-2xl font-semibold mt-1">{totalProjects}</p>
+          <p className="text-3xl font-bold text-navy-dark mt-1">{totalProjects}</p>
         </Card>
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center mb-3 group-hover:bg-gold/25 transition-colors">
+            <MapPin className="w-5 h-5 text-gold" />
+          </div>
           <p className="text-sm text-slate-500">Total Parcels</p>
-          <p className="text-2xl font-semibold mt-1">{totalParcels}</p>
+          <p className="text-3xl font-bold text-navy-dark mt-1">{totalParcels}</p>
         </Card>
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-red-300 hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mb-3">
+            <ShieldAlert className="w-5 h-5 text-red-600" />
+          </div>
           <p className="text-sm text-slate-500">High Risk Parcels</p>
-          <p className="text-2xl font-semibold mt-1 text-red-600">{highRiskCount}</p>
+          <p className="text-3xl font-bold text-red-600 mt-1">{highRiskCount}</p>
         </Card>
       </div>
 
-      <div className="bg-white rounded-xl border p-6">
-        <h2 className="font-semibold mb-4">Parcel Map</h2>
-        <ParcelMap parcels={parcels} />
-      </div>
+      <Card className="p-6 mb-6">
+        <h2 className="font-semibold text-navy-dark mb-4">Parcel Map</h2>
+        <div className="rounded-xl overflow-hidden border border-slate-200">
+          <ParcelMap parcels={parcels} />
+        </div>
+      </Card>
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-lg">Your Projects</h2>
-        <Link href="/projects/new" className="text-sm text-blue-600 hover:underline font-medium">
-          + New Project
-        </Link>
+        <h2 className="text-xl font-bold text-navy-dark">Your Projects</h2>
       </div>
 
       {projects.length === 0 ? (
@@ -85,12 +93,12 @@ export default async function AgencyDashboard() {
         <Card className="p-0 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>State</TableHead>
-                <TableHead>Sector</TableHead>
-                <TableHead>Parcels</TableHead>
-                <TableHead>Highest Risk</TableHead>
+              <TableRow className="gov-table-header hover:bg-navy-dark">
+                <TableHead className="text-white/80">Name</TableHead>
+                <TableHead className="text-white/80">State</TableHead>
+                <TableHead className="text-white/80">Sector</TableHead>
+                <TableHead className="text-white/80">Parcels</TableHead>
+                <TableHead className="text-white/80">Highest Risk</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -104,7 +112,7 @@ export default async function AgencyDashboard() {
                 return (
                   <TableRow key={p.id}>
                     <TableCell>
-                      <Link href={`/projects/${p.id}`} className="text-blue-600 hover:underline">
+                      <Link href={`/projects/${p.id}`} className="text-gold hover:text-gold-light font-medium transition-colors">
                         {p.name}
                       </Link>
                     </TableCell>

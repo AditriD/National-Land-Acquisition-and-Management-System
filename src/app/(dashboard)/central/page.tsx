@@ -16,7 +16,7 @@ import Link from 'next/link'
 import { ParcelMap } from '@/components/parcel-map-client'
 import { getScopedParcels } from '@/lib/get-scoped-parcels'
 import { ViewStatsButton } from '@/components/dashboard/view-stats-button'
-
+import { Building2, MapPin, ShieldAlert, Users, Plus } from 'lucide-react'
 
 const RISK_STYLES: Record<string, string> = {
   LOW: 'bg-green-100 text-green-700 hover:bg-green-100',
@@ -25,6 +25,8 @@ const RISK_STYLES: Record<string, string> = {
 }
 
 export default async function CentralDashboard() {
+  const session = await getServerSession(authOptions)
+
   const projects = await prisma.project.findMany({
     include: { parcels: true },
     orderBy: { createdAt: 'desc' },
@@ -43,60 +45,79 @@ export default async function CentralDashboard() {
     0
   )
 
-  // Group by state for a quick breakdown
   const byState = projects.reduce((acc, p) => {
     acc[p.state] = (acc[p.state] || 0) + 1
     return acc
   }, {} as Record<string, number>)
 
+  const canCreate = session && (session.user.role === 'CENTRAL' || session.user.role === 'STATE')
+
   return (
     <DashboardLayout title="Central Dashboard — National View" role="CENTRAL">
-      
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">National Overview</h1>
+        <h1 className="text-2xl font-bold text-navy-dark">National Overview</h1>
         <ViewStatsButton />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center mb-3 group-hover:bg-navy/20 transition-colors">
+            <Building2 className="w-5 h-5 text-navy" />
+          </div>
           <p className="text-sm text-slate-500">Total Projects</p>
-          <p className="text-2xl font-semibold mt-1">{totalProjects}</p>
+          <p className="text-3xl font-bold text-navy-dark mt-1">{totalProjects}</p>
         </Card>
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-gold hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center mb-3 group-hover:bg-gold/25 transition-colors">
+            <MapPin className="w-5 h-5 text-gold" />
+          </div>
           <p className="text-sm text-slate-500">Total Parcels</p>
-          <p className="text-2xl font-semibold mt-1">{totalParcels}</p>
+          <p className="text-3xl font-bold text-navy-dark mt-1">{totalParcels}</p>
         </Card>
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-red-300 hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mb-3">
+            <ShieldAlert className="w-5 h-5 text-red-600" />
+          </div>
           <p className="text-sm text-slate-500">High Risk Parcels</p>
-          <p className="text-2xl font-semibold mt-1 text-red-600">{highRiskCount}</p>
+          <p className="text-3xl font-bold text-red-600 mt-1">{highRiskCount}</p>
         </Card>
-        <Card className="p-6">
+        <Card className="gov-stat-card group hover:border-amber-300 hover:shadow-md transition-all">
+          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mb-3">
+            <Users className="w-5 h-5 text-amber-600" />
+          </div>
           <p className="text-sm text-slate-500">Disputed Parcels</p>
-          <p className="text-2xl font-semibold mt-1 text-amber-600">{disputedCount}</p>
+          <p className="text-3xl font-bold text-amber-600 mt-1">{disputedCount}</p>
         </Card>
       </div>
 
       <Card className="p-6 mb-6">
-        <h2 className="font-semibold mb-3">Projects by State</h2>
+        <h2 className="font-semibold text-navy-dark mb-3">Projects by State</h2>
         <div className="flex flex-wrap gap-2">
           {Object.entries(byState).map(([state, count]) => (
-            <Badge key={state} variant="outline" className="text-sm px-3 py-1">
+            <Badge key={state} variant="outline" className="text-sm px-3 py-1 border-navy/20 text-navy-dark bg-navy/5">
               {state}: {count}
             </Badge>
           ))}
         </div>
       </Card>
 
-      <div className="bg-white rounded-xl border p-6">
-        <h2 className="font-semibold mb-4">Parcel Map</h2>
-        <ParcelMap parcels={parcels} />
-      </div>
+      <Card className="p-6 mb-6">
+        <h2 className="font-semibold text-navy-dark mb-4">Parcel Map</h2>
+        <div className="rounded-xl overflow-hidden border border-slate-200">
+          <ParcelMap parcels={parcels} />
+        </div>
+      </Card>
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-lg">All Projects</h2>
-        <Link href="/projects/new" className="text-sm text-blue-600 hover:underline font-medium">
-          + New Project
-        </Link>
+        <h2 className="text-xl font-bold text-navy-dark">All Projects</h2>
+        {canCreate && (
+          <Link
+            href="/projects/new"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold bg-gold text-navy-dark px-4 py-2 rounded-md hover:bg-gold-light transition-colors"
+          >
+            <Plus className="w-4 h-4" /> New Project
+          </Link>
+        )}
       </div>
 
       {projects.length === 0 ? (
@@ -105,13 +126,13 @@ export default async function CentralDashboard() {
         <Card className="p-0 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>State</TableHead>
-                <TableHead>Sector</TableHead>
-                <TableHead>Agency</TableHead>
-                <TableHead>Parcels</TableHead>
-                <TableHead>Highest Risk</TableHead>
+              <TableRow className="gov-table-header hover:bg-navy-dark">
+                <TableHead className="text-white/80">Name</TableHead>
+                <TableHead className="text-white/80">State</TableHead>
+                <TableHead className="text-white/80">Sector</TableHead>
+                <TableHead className="text-white/80">Agency</TableHead>
+                <TableHead className="text-white/80">Parcels</TableHead>
+                <TableHead className="text-white/80">Highest Risk</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,7 +146,7 @@ export default async function CentralDashboard() {
                 return (
                   <TableRow key={p.id}>
                     <TableCell>
-                      <Link href={`/projects/${p.id}`} className="text-blue-600 hover:underline">
+                      <Link href={`/projects/${p.id}`} className="text-gold hover:text-gold-light font-medium transition-colors">
                         {p.name}
                       </Link>
                     </TableCell>

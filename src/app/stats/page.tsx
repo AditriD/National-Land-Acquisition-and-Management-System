@@ -6,6 +6,8 @@ import { StageChart } from '@/components/dashboard/stage-chart'
 import { RiskChart } from '@/components/dashboard/risk-chart'
 import { SectorChart } from '@/components/dashboard/sector-chart'
 import { redirect } from 'next/navigation'
+import { DashboardLayout } from '@/components/dashboard-layout'
+import { Card } from '@/components/ui/card'
 
 export default async function StatsPage() {
   const session = await getServerSession(authOptions)
@@ -24,20 +26,18 @@ export default async function StatsPage() {
           : session.user.agencyName ?? 'Agency'
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">{scopeLabel} Statistics</h1>
-
+    <DashboardLayout title={`${scopeLabel} Statistics`} role={session.user.role}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="border rounded-lg p-4">
+        <Card className="p-6">
           <StageChart data={byStage} />
-        </div>
-        <div className="border rounded-lg p-4">
+        </Card>
+        <Card className="p-6">
           <RiskChart data={byRisk} />
-        </div>
-        <div className="border rounded-lg p-4 md:col-span-2">
+        </Card>
+        <Card className="p-6 md:col-span-2">
           <SectorChart data={bySector} />
-        </div>
+        </Card>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

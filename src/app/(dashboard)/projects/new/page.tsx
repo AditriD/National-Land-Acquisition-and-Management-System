@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { BackButton } from '@/components/back-button'
 
 export default function NewProjectPage() {
   const { data: session, status } = useSession()
@@ -21,7 +22,6 @@ export default function NewProjectPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Wait for session to load before deciding anything
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -46,7 +46,6 @@ export default function NewProjectPage() {
     )
   }
 
-  // STATE users: state field is locked to their own state
   const isStateUser = role === 'STATE'
   const effectiveState = isStateUser ? session?.user?.state ?? '' : form.state
 
@@ -82,45 +81,56 @@ export default function NewProjectPage() {
   }
 
   return (
-    <Card className="p-8 max-w-lg mx-auto mt-10">
-      <h1 className="text-xl font-semibold mb-6">New Project</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          placeholder="Project Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <Input
-          placeholder="Implementing Agency (e.g. NHAI)"
-          value={form.implementingAgency}
-          onChange={(e) => setForm({ ...form, implementingAgency: e.target.value })}
-        />
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-lg mx-auto p-6">
+        <div className="mb-6">
+          <BackButton />
+        </div>
+        <Card className="p-8">
+          <h1 className="text-xl font-bold text-navy-dark mb-6">New Project</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              placeholder="Project Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            <Input
+              placeholder="Implementing Agency (e.g. NHAI)"
+              value={form.implementingAgency}
+              onChange={(e) => setForm({ ...form, implementingAgency: e.target.value })}
+            />
 
-        {isStateUser ? (
-          <Input placeholder="State" value={effectiveState} disabled />
-        ) : (
-          <Input
-            placeholder="State"
-            value={form.state}
-            onChange={(e) => setForm({ ...form, state: e.target.value })}
-          />
-        )}
+            {isStateUser ? (
+              <Input placeholder="State" value={effectiveState} disabled className="bg-slate-50" />
+            ) : (
+              <Input
+                placeholder="State"
+                value={form.state}
+                onChange={(e) => setForm({ ...form, state: e.target.value })}
+              />
+            )}
 
-        <Input
-          placeholder="Sector (Highway/Irrigation/Railway)"
-          value={form.sector}
-          onChange={(e) => setForm({ ...form, sector: e.target.value })}
-        />
-        <Input
-          type="date"
-          value={form.targetCompletion}
-          onChange={(e) => setForm({ ...form, targetCompletion: e.target.value })}
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Creating...' : 'Create Project'}
-        </Button>
-      </form>
-    </Card>
+            <Input
+              placeholder="Sector (Highway/Irrigation/Railway)"
+              value={form.sector}
+              onChange={(e) => setForm({ ...form, sector: e.target.value })}
+            />
+            <Input
+              type="date"
+              value={form.targetCompletion}
+              onChange={(e) => setForm({ ...form, targetCompletion: e.target.value })}
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gold text-navy-dark font-semibold hover:bg-gold-light"
+            >
+              {loading ? 'Creating...' : 'Create Project'}
+            </Button>
+          </form>
+        </Card>
+      </div>
+    </div>
   )
 }

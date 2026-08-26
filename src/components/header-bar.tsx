@@ -6,13 +6,21 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { Landmark, Bell, ChevronDown, UserCircle, LogOut, LayoutDashboard } from 'lucide-react'
 
+const roleHome: Record<string, string> = {
+  CENTRAL: '/central',
+  STATE: '/state',
+  DISTRICT: '/district',
+  AGENCY: '/agency',
+  ADMIN: '/admin',
+}
+
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/#about' },
   { label: 'Projects', href: '/dashboard' },
   { label: 'GIS Map', href: '/dashboard' },
   { label: 'Citizen Lookup', href: '/citizen-lookup' },
-  { label: 'Resources', href: '/#resources' },
+  { label: 'Resources', href: '/resources' },
 ]
 
 function roleLabel(role?: string) {
@@ -25,9 +33,13 @@ export function HeaderBar() {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  // The landing page carries its own hero background, so the header floats
-  // over it transparently. Every other page gets a solid bar.
   const isHome = pathname === '/'
+
+  const homeHref = session ? (roleHome[session.user.role] ?? '/') : '/'
+
+  const displayLinks = session?.user
+    ? NAV_LINKS.map((l) => (l.label === 'Home' ? { ...l, href: homeHref } : l))
+    : NAV_LINKS
 
   return (
     <header
@@ -39,7 +51,7 @@ export function HeaderBar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4 text-white">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+        <Link href={homeHref} className="flex items-center gap-2.5 shrink-0">
           <span className="w-9 h-9 rounded-md bg-white/10 flex items-center justify-center">
             <Landmark className="w-5 h-5 text-gold" />
           </span>
@@ -51,7 +63,7 @@ export function HeaderBar() {
 
         {/* NAV */}
         <nav className="hidden lg:flex items-center gap-1">
-          {NAV_LINKS.map((link) => {
+          {displayLinks.map((link) => {
             const active = link.href === '/' ? pathname === '/' : pathname === link.href
             return (
               <Link
@@ -108,7 +120,7 @@ export function HeaderBar() {
               {menuOpen && (
                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-white text-slate-700 shadow-lg border border-slate-200 py-1 z-50">
                   <Link
-                    href="/dashboard"
+                    href={homeHref}
                     className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-slate-50"
                     onClick={() => setMenuOpen(false)}
                   >

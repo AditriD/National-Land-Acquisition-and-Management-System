@@ -140,3 +140,40 @@
     @apply font-sans;
   }
 }
+
+/* Government portal utility classes */
+@layer utilities {
+  .gov-card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  }
+  .gov-card-dark {
+    @apply bg-navy text-white rounded-xl border border-white/10;
+  }
+  .gov-stat-card {
+    @apply bg-white rounded-xl border border-slate-200 p-6 shadow-sm;
+  }
+  .gov-section-title {
+    @apply font-display text-xl font-bold text-navy-dark;
+  }
+  .gov-heading {
+    @apply text-lg font-semibold text-slate-900;
+  }
+  .gov-text {
+    @apply text-sm text-slate-500;
+  }
+  .gov-link {
+    @apply text-gold hover:text-gold-light font-medium transition-colors;
+  }
+  .gov-table-header {
+    @apply bg-navy-dark text-white;
+  }
+  .gov-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .gov-page-bg {
+    @apply min-h-screen bg-slate-50;
+  }
+  .gov-divider {
+    @apply border-t border-slate-200;
+  }
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1128"/>
+      <stop offset="100%" style="stop-color:#1a2744"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="200" fill="url(#bg)"/>
+  <rect x="40" y="55" width="90" height="90" rx="45" fill="rgba(200,149,45,0.15)" stroke="#c8952d" stroke-width="1"/>
+  <text x="85" y="108" text-anchor="middle" fill="#c8952d" font-family="sans-serif" font-size="28">&#128276;</text>
+  <line x1="160" y1="40" x2="160" y2="160" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="190" y="85" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="13">Official notifications</text>
+  <text x="190" y="105" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="13">relevant to ongoing</text>
+  <text x="190" y="125" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-size="13">land acquisitions</text>
+  <text x="760" y="170" text-anchor="end" fill="rgba(255,255,255,0.3)" font-family="sans-serif" font-size="10">Government of India</text>
+</svg>
