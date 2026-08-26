@@ -10,6 +10,11 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-display: var(--font-playfair);
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -73,6 +78,13 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
+
+  /* Government portal palette */
+  --navy: oklch(0.28 0.06 258);
+  --navy-dark: oklch(0.17 0.045 258);
+  --gold: oklch(0.78 0.14 85);
+  --gold-light: oklch(0.87 0.11 90);
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
